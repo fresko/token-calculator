@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Calculadora de Tokens - Banco de Occidente</title>
+<!-- Fuentes del sistema — sin dependencias externas ni llamados a internet -->
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 100 100" style="width:32px;height:32px;">
+      <rect x="25" y="25" width="50" height="50" transform="rotate(45 50 50)" fill="none" stroke="#0079C1" stroke-width="12"/>
+      <rect x="37" y="37" width="26" height="26" transform="rotate(45 50 50)" fill="none" stroke="#0079C1" stroke-width="6"/>
+    </svg>
+    <div class="logo-text">
+      <span class="brand-title">Banco de Occidente</span>
+      <span class="brand-subtitle">Calculadora de Tokens de IA</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="tagline">Del lado de los que hacen.</span>
+    <span class="hbadge">Uso Interno · v3.5</span>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('single')">Prompt único</button>
+  <button class="tab-btn" onclick="switchTab('batch')">Batch CSV (100+ prompts)</button>
+  <button class="tab-btn" onclick="switchTab('cache')">💾 Prompt Caching</button>
+  <button class="tab-btn" onclick="switchTab('compare')">Comparativa modelos</button>
+  <button class="tab-btn" onclick="switchTab('bizagi')">⚙️ Bizagi BPUs</button>
+</div>
+
+<!-- TAB SINGLE -->
+<div class="panel active" id="tab-single">
+<div class="layout">
+  <aside>
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem;padding-bottom:10px;border-bottom:1px solid var(--b1);">
+        <span style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--t2);">Tokens de entrada</span>
+        <div class="pills" style="margin:0;gap:4px;">
+          <button class="pill active" id="s-mode-text"  onclick="setSingleMode('text')">Texto</button>
+          <button class="pill"        id="s-mode-tokens" onclick="setSingleMode('tokens')">Cantidad</button>
+        </div>
+      </div>
+      <div id="s-text-mode">
+        <textarea id="s-input" rows="6" placeholder="Pega tu prompt aquí..." oninput="calcSingle()"></textarea>
+        <div class="meta"><span id="s-chars">0 chars</span><span>≈ <span class="hi" id="s-itok">0</span> tokens</span></div>
+      </div>
+      <div id="s-tokens-mode" style="display:none;">
+        <div class="field" style="margin-bottom:0;">
+          <label>Tokens de entrada (cantidad exacta)</label>
+          <input type="number" id="s-input-tok" value="0" min="0" oninput="calcSingle()"/>
+        </div>
+        <div class="meta" style="margin-top:6px;"><span>Ingresa el total de tokens del prompt</span><span class="hi" id="s-itok-manual">0 tokens</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Skills / Contexto base</div>
+      <div class="drop-zone" id="s-skill-drop" onclick="document.getElementById('s-sf').click()" ondragover="dOver(event,'s-skill-drop')" ondragleave="dLeave('s-skill-drop')" ondrop="dDropSkill(event,'single')">
+        <div class="drop-icon">📎</div>
+        <div class="drop-text">Subir skill (.txt o .md)</div>
+        <div class="drop-hint">Se añade como contexto base a este prompt</div>
+      </div>
+      <input type="file" id="s-sf" accept=".txt,.md" multiple style="display:none" onchange="loadSkills(event,'single')"/>
+      <div class="skill-list" id="s-skill-list"></div>
+      <div class="meta" style="margin-top:8px;"><span>Total skills:</span><span class="hi" id="s-skill-tok">0 tokens</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Parámetros</div>
+      <div class="field"><label>Tokens de salida esperados</label><input type="number" id="s-out" value="500" min="1" oninput="calcSingle()"/></div>
+      <div class="field"><label>Número de ejecuciones</label><input type="number" id="s-calls" value="1000" min="1" oninput="calcSingle()"/></div>
+      <div class="field"><label>Período</label>
+        <select id="s-period" onchange="calcSingle()">
+          <option value="1">Diario</option><option value="7">Semanal</option>
+          <option value="30" selected>Mensual</option><option value="365">Anual</option>
+        </select>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Modelo</div>
+      <div class="pills" id="s-ppills"></div>
+      <div class="model-list" id="s-mlist"></div>
+    </div>
+  </aside>
+  <main>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:1rem;">
+      <button class="btn-report" onclick="generateReport('single')">📊 Reporte Ejecutivo</button>
+    </div>
+    <div class="metrics" id="s-metrics"></div>
+    <div class="sec-hdr">Desglose de tokens</div>
+    <div style="margin-bottom:1.5rem;" id="s-tokbar"></div>
+    <div class="sec-hdr">Desglose de costo</div>
+    <div class="bd-grid" id="s-costbd"></div>
+  </main>
+</div>
+</div>
+
+<!-- TAB BATCH -->
+<div class="panel" id="tab-batch">
+<div class="layout">
+  <aside>
+    <div class="card">
+      <div class="card-title">Skills / Contexto base</div>
+      <div class="drop-zone" id="b-skill-drop" onclick="document.getElementById('b-sf').click()" ondragover="dOver(event,'b-skill-drop')" ondragleave="dLeave('b-skill-drop')" ondrop="dDropSkill(event,'batch')">
+        <div class="drop-icon">📎</div>
+        <div class="drop-text">Subir skills (.txt o .md)</div>
+        <div class="drop-hint">Se suman a todos los prompts del CSV</div>
+      </div>
+      <input type="file" id="b-sf" accept=".txt,.md" multiple style="display:none" onchange="loadSkills(event,'batch')"/>
+      <div class="skill-list" id="b-skill-list"></div>
+      <div class="meta" style="margin-top:8px;"><span>Total skills:</span><span class="hi" id="b-skill-tok">0 tokens</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Cargar prompts (CSV)</div>
+      <div class="drop-zone csv" onclick="document.getElementById('csv-file').click()" ondragover="dOver(event,'csv-dz')" ondragleave="dLeave('csv-dz')" ondrop="dDropCSV(event)" id="csv-dz">
+        <div class="drop-icon">📊</div>
+        <div class="drop-text">Subir archivo CSV</div>
+        <div class="drop-hint">Arrastra o haz clic</div>
+      </div>
+      <input type="file" id="csv-file" accept=".csv" style="display:none" onchange="loadCSV(event)"/>
+      <div style="margin-top:12px;">
+        <div class="sec-hdr" style="margin-bottom:8px;">Formato esperado</div>
+        <div class="tmpl">nombre,prompt,<span class="hi">output_tokens</span><br>Clasificador,"Clasifica este texto...",<span class="hi">50</span><br>Resumen,"Resume el siguiente...",<span class="hi">300</span><br>Extractor,"Extrae los campos...",<span class="hi">100</span></div>
+        <div style="margin-top:6px;font-size:10px;color:var(--t3);"><span style="color:var(--am);">output_tokens</span> es opcional. Si no está, se usa el valor por defecto.</div>
+      </div>
+
+      <!-- Parámetros de escenario -->
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--b1);">
+        <div style="font-family:'Segoe UI Semibold','Segoe UI',Arial,sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--t2);margin-bottom:10px;">Parámetros de escenario</div>
+
+        <!-- Output tokens -->
+        <div class="field">
+          <label>Output tokens por defecto</label>
+          <input type="number" id="b-out-def" value="500" min="1" oninput="calcBatch()"/>
+        </div>
+        <div class="batch-override-row">
+          <label class="batch-override-label">
+            <input type="checkbox" id="b-out-override" onchange="calcBatch()"/>
+            <span>Forzar en todos los prompts</span>
+          </label>
+          <span class="batch-override-hint">Ignora output_tokens del CSV</span>
+        </div>
+
+        <!-- Input adicional -->
+        <div class="field" style="margin-top:10px;">
+          <label>Input adicional por prompt (tokens)</label>
+          <input type="number" id="b-in-extra" value="0" min="0" oninput="calcBatch()"/>
+        </div>
+        <div class="batch-override-row">
+          <label class="batch-override-label">
+            <input type="checkbox" id="b-in-override" onchange="calcBatch()"/>
+            <span>Simular carga real de datos</span>
+          </label>
+          <span class="batch-override-hint">Se suma al texto del prompt del CSV</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Parámetros globales</div>
+      <div class="field"><label>Ejecuciones por prompt</label><input type="number" id="b-calls" value="1000" min="1" oninput="calcBatch()"/></div>
+      <div class="field"><label>Período</label>
+        <select id="b-period" onchange="calcBatch()">
+          <option value="1">Diario</option><option value="7">Semanal</option>
+          <option value="30" selected>Mensual</option><option value="365">Anual</option>
+        </select>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Modelo</div>
+      <div class="pills" id="b-ppills"></div>
+      <div class="model-list" id="b-mlist"></div>
+    </div>
+  </aside>
+  <main>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:1rem;">
+      <button class="btn-report" onclick="generateReport('batch')">📊 Reporte Ejecutivo</button>
+    </div>
+    <div id="b-summary"></div>
+    <div class="sec-hdr">Detalle por prompt</div>
+    <div class="ptable-wrap">
+      <table>
+        <thead><tr>
+          <th>#</th><th>Nombre</th><th>Tok. prompt</th><th>Tok. skill</th>
+          <th>Tok. salida</th><th>Total/llamada</th><th>Costo/llamada</th><th>Costo total</th><th>Peso</th>
+        </tr></thead>
+        <tbody id="b-tbody"></tbody>
+      </table>
+    </div>
+    <div style="margin-top:1.5rem;" id="b-totals"></div>
+  </main>
+</div>
+</div>
+
+<!-- TAB CACHE -->
+<div class="panel" id="tab-cache">
+<div class="layout">
+  <aside>
+
+    <div class="card">
+      <div class="card-title">Modelo</div>
+      <div class="pills" id="cc-ppills"></div>
+      <div class="model-list" id="cc-mlist"></div>
+      <div id="cc-rates-info" style="margin-top:10px;padding:9px 11px;background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);font-size:10px;color:var(--t3);line-height:1.9;font-family:'JetBrains Mono',monospace;"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Skill / Sistema (contexto fijo)</div>
+      <div class="field">
+        <label>Tokens del skill</label>
+        <input type="number" id="cc-skill-tok" value="5000" min="0" oninput="calcCache()"/>
+      </div>
+      <div class="field">
+        <label>¿El skill se cachea entre conversaciones?</label>
+        <select id="cc-skill-cache" onchange="calcCache()">
+          <option value="1">Sí — se reutiliza en todas las conversaciones</option>
+          <option value="0">No — se re-escribe en cada conversación</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Estructura de la conversación</div>
+      <div class="field">
+        <label>Tokens por prompt de usuario (promedio)</label>
+        <input type="number" id="cc-prompt-tok" value="200" min="1" oninput="calcCache()"/>
+      </div>
+      <div class="field">
+        <label>Tokens por respuesta del modelo (promedio)</label>
+        <input type="number" id="cc-resp-tok" value="500" min="1" oninput="calcCache()"/>
+      </div>
+      <div class="field">
+        <label>Número de turnos por conversación</label>
+        <input type="number" id="cc-turns" value="8" min="1" max="200" oninput="calcCache()"/>
+      </div>
+      <div class="field">
+        <label>¿El historial de mensajes se cachea?</label>
+        <select id="cc-hist-cache" onchange="calcCache()">
+          <option value="1">Sí — mensajes anteriores se leen del caché</option>
+          <option value="0">No — el historial se re-envía completo sin caché</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Volumen y período</div>
+      <div class="field">
+        <label>Número de conversaciones</label>
+        <input type="number" id="cc-convos" value="500" min="1" oninput="calcCache()"/>
+      </div>
+      <div class="field">
+        <label>Período</label>
+        <select id="cc-period" onchange="calcCache()">
+          <option value="1">Diario</option>
+          <option value="7">Semanal</option>
+          <option value="30" selected>Mensual</option>
+          <option value="365">Anual</option>
+        </select>
+      </div>
+    </div>
+
+  </aside>
+  <main>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:1rem;">
+      <button class="btn-report" onclick="generateReport('cache')">📊 Reporte Ejecutivo</button>
+    </div>
+
+    <!-- Métricas principales -->
+    <div class="metrics" id="cc-metrics"></div>
+
+    <!-- Barra de ahorro -->
+    <div id="cc-savings-bar" style="margin-bottom:1.5rem;"></div>
+
+    <!-- Tabla turno a turno -->
+    <div class="sec-hdr">Desglose turno a turno — una conversación</div>
+    <div class="ptable-wrap" style="margin-bottom:1.5rem;">
+      <table>
+        <thead><tr>
+          <th>Turno</th>
+          <th>Skill (tok)</th>
+          <th>Historial acum. (tok)</th>
+          <th>Prompt nuevo (tok)</th>
+          <th>Total entrada (tok)</th>
+          <th>Cache write (tok / $)</th>
+          <th>Cache read (tok / $)</th>
+          <th>Input normal (tok / $)</th>
+          <th>Salida (tok / $)</th>
+          <th>Costo CON caché</th>
+          <th>Costo SIN caché</th>
+          <th>Ahorro turno</th>
+        </tr></thead>
+        <tbody id="cc-turn-tbody"></tbody>
+        <tfoot id="cc-turn-tfoot"></tfoot>
+      </table>
+    </div>
+
+    <!-- Comparativa con / sin caché -->
+    <div class="sec-hdr">Comparativa con y sin caché — <span id="cc-convos-label"></span></div>
+    <div class="bd-grid" id="cc-costbd"></div>
+
+  </main>
+</div>
+</div>
+
+<!-- TAB COMPARE -->
+<div class="panel" id="tab-compare">
+
+  <!-- Barra superior: descripción + acciones -->
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:10px;">
+    <div style="font-size:12px;color:var(--t2);">Comparativa de modelos — costo, velocidad y razonamiento con los mismos parámetros.</div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn" onclick="syncCompare()">↑ Sincronizar desde Prompt único</button>
+      <button class="btn-report" onclick="generateReport('compare')">📊 Reporte Ejecutivo</button>
+    </div>
+  </div>
+
+  <!-- Parámetros -->
+  <div class="card" style="max-width:580px;margin-bottom:1.25rem;">
+    <div class="card-title">Parámetros</div>
+    <div class="field-row">
+      <div class="field"><label>Tokens de entrada</label><input type="number" id="c-in" value="200" min="1" oninput="calcCompare()"/></div>
+      <div class="field"><label>Tokens de salida</label><input type="number" id="c-out" value="500" min="1" oninput="calcCompare()"/></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Tokens de skill/contexto</label><input type="number" id="c-skill" value="0" min="0" oninput="calcCompare()"/></div>
+      <div class="field"><label>Llamadas totales</label><input type="number" id="c-calls" value="1000" min="1" oninput="calcCompare()"/></div>
+    </div>
+  </div>
+
+  <!-- Toggle de vista: Todos los modelos / Direct API vs Bedrock -->
+  <div class="compare-sort-bar" style="margin-bottom:8px;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:11px;font-weight:600;color:var(--t2);font-family:'Segoe UI Semibold','Segoe UI',Arial,sans-serif;">Vista:</span>
+      <div class="pills" style="margin:0;gap:4px;">
+        <button class="pill active" id="c-view-all"    onclick="setCompareView('all')">Todos los modelos</button>
+        <button class="pill"        id="c-view-bedrock" onclick="setCompareView('bedrock')">⚡ Direct API vs Bedrock</button>
+      </div>
+    </div>
+    <div style="font-size:10px;color:var(--t3);">Región Bedrock: <strong>us-east-1</strong></div>
+  </div>
+
+  <!-- Selector de ordenación + leyenda de score -->
+  <div class="compare-sort-bar">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:11px;font-weight:600;color:var(--t2);font-family:'Segoe UI Semibold','Segoe UI',Arial,sans-serif;">Ordenar por:</span>
+      <div class="pills" style="margin:0;gap:4px;">
+        <button class="pill active" id="c-sort-cost"  onclick="setCompareSort('cost')">💰 Costo</button>
+        <button class="pill"        id="c-sort-score" onclick="setCompareSort('score')">⭐ Score Global</button>
+      </div>
+    </div>
+    <div class="score-legend" id="c-score-legend">
+      <span style="font-size:10px;color:var(--t3);font-family:'Segoe UI Semibold','Segoe UI',Arial,sans-serif;">Score = Razonamiento <strong>40%</strong> · Costo <strong>35%</strong> · Velocidad <strong>25%</strong></span>
+    </div>
+  </div>
+
+  <!-- Tabla comparativa -->
+  <div class="ptable-wrap">
+    <table>
+      <thead><tr id="c-thead-row">
+        <th>Modelo</th>
+        <th>Proveedor</th>
+        <th>Input /1M</th>
+        <th>Output /1M</th>
+        <th>Costo total</th>
+        <th>vs. más barato</th>
+        <th>Velocidad</th>
+        <th>Razonamiento</th>
+        <th>Score</th>
+      </tr></thead>
+      <tbody id="c-tbody"></tbody>
+    </table>
+  </div>
+
+  <!-- Insight automático Bedrock (oculto en modo normal) -->
+  <div id="c-bedrock-insight" style="display:none;margin-top:10px;padding:10px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:var(--r2);font-size:12px;color:var(--t1);">
+    💡 <span id="c-bedrock-insight-text"></span>
+  </div>
+
+  <!-- Disclaimer capacidades -->
+  <div style="margin-top:10px;font-size:10px;color:var(--t3);font-family:'Segoe UI',Arial,sans-serif;">
+    ⓘ Velocidad y Razonamiento son valoraciones relativas basadas en benchmarks y documentación pública de cada proveedor (revisión: jun 2026). No representan métricas oficiales comparables entre proveedores.
+    Precios Bedrock fuente oficial: aws.amazon.com/bedrock/pricing/
+  </div>
+
+  <!-- Sección Recomendación para tu iniciativa -->
+  <div id="c-recommendation-section" style="margin-top:2rem;">
+    <div class="sec-hdr">Recomendación para tu iniciativa</div>
+    <div class="pills" id="c-initiative-pills" style="margin-bottom:1.25rem;gap:6px;flex-wrap:wrap;">
+      <!-- Generadas por _initInitiativePills() al cargar -->
+    </div>
+    <div id="c-recommendation-content"></div>
+  </div>
+
+</div>
+
+<!-- TAB BIZAGI BPU -->
+<div class="panel" id="tab-bizagi">
+<div class="layout">
+  <aside>
+
+    <!-- Modelo de precios -->
+    <div class="card">
+      <div class="card-title">Modelo de precios Bizagi</div>
+      <div class="pills" style="margin-bottom:12px;">
+        <button class="pill active" id="bz-btn-legacy" onclick="switchBizagiModel('legacy')">Legacy (pre-2026)</button>
+        <button class="pill"        id="bz-btn-2026"   onclick="switchBizagiModel('2026')">2026+</button>
+      </div>
+      <div id="bz-model-info" style="padding:9px 11px;background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);font-size:10px;color:var(--t3);line-height:1.9;font-family:'JetBrains Mono',monospace;"></div>
+    </div>
+
+    <!-- Acción de IA -->
+    <div class="card">
+      <div class="card-title">Acción de IA</div>
+      <div class="model-list" id="bz-action-list"></div>
+    </div>
+
+    <!-- Campos Legacy -->
+    <div class="card" id="bz-legacy-fields">
+      <div class="card-title">Volumen — Modelo Legacy</div>
+      <div class="field">
+        <label>Prompts por período</label>
+        <input type="number" id="bz-prompts" value="2300" min="0" oninput="calcBizagi()"/>
+        <div class="meta" style="margin-top:4px;"><span>1 BPU = 2,500 prompts</span></div>
+      </div>
+      <div class="field">
+        <label>Steps de automatización por período</label>
+        <input type="number" id="bz-steps-legacy" value="0" min="0" oninput="calcBizagi()"/>
+        <div class="meta" style="margin-top:4px;"><span>1 BPU = 10,000 steps</span></div>
+      </div>
+    </div>
+
+    <!-- Campos 2026+ -->
+    <div class="card" id="bz-2026-fields" style="display:none;">
+      <div class="card-title">Volumen — Modelo 2026+</div>
+      <div class="field">
+        <label>Tokens IA por período (input + output)</label>
+        <input type="number" id="bz-ai-tokens" value="0" min="0" oninput="calcBizagi()"/>
+        <div class="meta" style="margin-top:4px;"><span>1 AI BPU = 50,000,000 tokens</span></div>
+      </div>
+      <div class="field">
+        <label>Steps de automatización por período</label>
+        <input type="number" id="bz-auto-steps" value="0" min="0" oninput="calcBizagi()"/>
+        <div class="meta" style="margin-top:4px;"><span>1 Auto BPU = 10,000 steps</span></div>
+      </div>
+      <div style="margin-top:10px;padding:8px 10px;background:var(--ac3);border:1px solid var(--ac2);border-radius:var(--r);font-size:10px;color:var(--ac);line-height:1.7;">
+        ℹ️ En el modelo 2026+, AI BPUs y Automation BPUs son <strong>presupuestos independientes</strong> — el consumo de uno no afecta al otro.
+      </div>
+    </div>
+
+    <!-- Período -->
+    <div class="card">
+      <div class="card-title">Período de referencia</div>
+      <div class="field">
+        <label>Período</label>
+        <select id="bz-period" onchange="calcBizagi()">
+          <option value="1">Diario</option>
+          <option value="7">Semanal</option>
+          <option value="30">Mensual</option>
+          <option value="365" selected>Anual</option>
+        </select>
+        <div class="meta" style="margin-top:4px;"><span>Bizagi factura por mes — usa "Mensual" para costo exacto</span></div>
+      </div>
+    </div>
+
+  </aside>
+  <main>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:10px;">
+      <div style="font-size:12px;color:var(--t2);">Estimación de costos operativos en Bizagi Processing Units (BPUs).</div>
+      <button class="btn-report" onclick="generateReport('bizagi')">📊 Reporte Ejecutivo</button>
+    </div>
+
+    <!-- Métricas principales -->
+    <div class="metrics" id="bz-metrics"></div>
+
+    <!-- Desglose BPUs -->
+    <div class="sec-hdr">Desglose de BPUs consumidos</div>
+    <div class="ptable-wrap" style="margin-bottom:1.5rem;">
+      <table>
+        <thead><tr>
+          <th>Tipo</th>
+          <th>Volumen</th>
+          <th>Unidades por BPU</th>
+          <th>BPUs</th>
+          <th>Costo (USD)</th>
+        </tr></thead>
+        <tbody id="bz-breakdown-tbody"></tbody>
+        <tfoot id="bz-breakdown-tfoot"></tfoot>
+      </table>
+    </div>
+
+    <!-- Barra de capacidad del BPU actual -->
+    <div class="sec-hdr">Utilización del BPU activo</div>
+    <div style="background:var(--s2);border:1px solid var(--b1);border-radius:var(--r2);padding:1rem 1.25rem;margin-bottom:1.5rem;" id="bz-capacity"></div>
+
+    <!-- Proyecciones -->
+    <div class="sec-hdr">Proyecciones y referencia</div>
+    <div class="bd-grid" id="bz-projections"></div>
+
+  </main>
+</div>
+</div>
+
+<!-- Área de impresión PDF (oculta en pantalla, visible solo al imprimir) -->
+<div id="report-print-area"></div>
+
+<!-- Modal Reporte Ejecutivo -->
+<div class="report-overlay" id="report-overlay" onclick="closeReport(event)">
+  <div class="report-modal">
+    <div class="report-modal-header">
+      <div>
+        <div class="report-modal-title">📊 Reporte Ejecutivo — Calculadora de Tokens IA</div>
+        <div class="report-modal-subtitle">Centro de Excelencia de IA · Banco de Occidente</div>
+      </div>
+      <button class="report-modal-close" onclick="closeReportBtn()">✕</button>
+    </div>
+    <div class="report-modal-body" id="report-modal-body"></div>
+    <div class="report-modal-footer">
+      <span class="report-footer-brand">Banco de Occidente · Uso Interno y Autorizado</span>
+      <div style="display:flex;gap:8px;">
+        <button class="btn-copy-md" onclick="copyReportMd()">📋 Copiar Markdown</button>
+        <button class="btn-export-pdf" onclick="exportReportPDF()">⬇ Exportar PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="corp-footer">
+  <div class="footer-left">
+    <span>© 2026 Banco de Occidente. Todos los derechos reservados.</span>
+    <span class="footer-divider">|</span>
+    <span>Uso Interno y Autorizado</span>
+  </div>
+  <div class="footer-right">
+    <span class="grupo-aval-text">Una entidad de</span>
+    <svg viewBox="0 0 120 30" class="aval-logo-svg" style="width: 75px; height: 20px; vertical-align: middle;">
+      <text x="5" y="20" font-family="'Montserrat', sans-serif" font-weight="800" font-size="16" fill="#0A2240">Grupo</text>
+      <text x="65" y="20" font-family="'Montserrat', sans-serif" font-weight="800" font-size="16" fill="#D81D30">AVAL</text>
+    </svg>
+  </div>
+</footer>
+
+<script src="js/models.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/calculator.js"></script>
+</body>
+</html>

@@ -1,0 +1,1816 @@
+:root {
+  --bg: #F4F7FA;
+  --s1: #FFFFFF;
+  --s2: #FFFFFF;
+  --s3: #F8FAFC;
+  --s4: #E2E8F0;
+  --b1: #E2E8F0;
+  --b2: #CBD5E1;
+  --b3: #94A3B8;
+  --t1: #1C2A38;
+  --t2: #475569;
+  --t3: #64748B;
+  --t4: #94A3B8;
+  --ac: #0079C1;
+  --ac2: rgba(0, 121, 193, 0.15);
+  --ac3: rgba(0, 121, 193, 0.06);
+  --gr: #008A4B;
+  --gr2: rgba(0, 138, 75, 0.08);
+  --am: #D97706;
+  --am2: rgba(217, 119, 6, 0.08);
+  --rd: #DC2626;
+  --rd2: rgba(220, 38, 38, 0.08);
+  --pu: #7C3AED;
+  --pu2: rgba(124, 58, 237, 0.08);
+  --r: 8px;
+  --r2: 12px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 13px;
+}
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--t1);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--b2);
+  border-radius: 999px;
+}
+
+/* Header Institucional */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 64px;
+  background: #0A2240;
+  border-bottom: 3px solid #0079C1;
+  box-shadow: 0 4px 10px rgba(10, 34, 64, 0.12);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-title {
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: -0.2px;
+}
+
+.brand-subtitle {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  color: #88A4C2;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.tagline {
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 11px;
+  font-style: italic;
+  font-weight: 500;
+  color: #FFFFFF;
+  opacity: 0.85;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  padding-right: 20px;
+}
+
+@media (max-width: 600px) {
+  .tagline {
+    display: none;
+  }
+}
+
+.hbadge {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 10px;
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+/* Tabs de Navegación */
+.tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  border-bottom: 1px solid var(--b1);
+  background: #FFFFFF;
+  padding: 0 1.5rem;
+  box-shadow: 0 2px 4px rgba(10, 34, 64, 0.02);
+  overflow-x: auto;
+  scrollbar-width: none;        /* Firefox — oculta scrollbar */
+  -ms-overflow-style: none;     /* IE/Edge */
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;                /* Chrome/Safari — oculta scrollbar */
+}
+
+.tab-btn {
+  padding: 15px 18px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--t3);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1400px) {
+  .tab-btn {
+    padding: 13px 14px;
+    font-size: 10.5px;
+    letter-spacing: 0;
+  }
+
+  .tabs {
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .tab-btn {
+    padding: 12px 12px;
+    font-size: 10px;
+  }
+
+  .tabs {
+    padding: 0 0.5rem;
+  }
+}
+
+.tab-btn:hover {
+  color: var(--ac);
+}
+
+.tab-btn.active {
+  color: var(--ac);
+  border-bottom-color: var(--ac);
+}
+
+.panel {
+  display: none;
+  padding: 2rem;
+}
+
+.panel.active {
+  display: block;
+}
+
+/* Layout Principal */
+.layout {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 2rem;
+  align-items: start;
+  min-width: 0;
+}
+
+/* min-width:0 evita que los grid items expandan el viewport */
+.layout > aside,
+.layout > main {
+  min-width: 0;
+}
+
+@media (max-width: 1100px) {
+  .layout {
+    grid-template-columns: 300px 1fr;
+    gap: 1.25rem;
+  }
+}
+
+/* Métricas pasan a 2 columnas cuando el espacio disponible es limitado */
+@media (max-width: 1200px) {
+  .metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .panel {
+    padding: 1.25rem;
+  }
+
+  .metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bd-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Tabla Prompt Caching — 12 columnas ────────────────────────────────── */
+/* El wrapper contiene el scroll — nunca desborda hacia el body             */
+#tab-cache .ptable-wrap {
+  overflow-x: auto;
+  width: 100%;
+}
+
+/* Tabla con ancho fijo — las columnas se reparten el espacio disponible    */
+#tab-cache table {
+  table-layout: fixed;
+  width: 100%;
+  min-width: 900px;   /* mínimo útil — el wrapper hace scroll si es menor  */
+}
+
+/* Cabeceras más compactas */
+#tab-cache thead th {
+  padding: 9px 5px;
+  font-size: 9px;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.3;
+}
+
+/* Celdas de datos compactas */
+#tab-cache tbody td,
+#tab-cache tfoot td {
+  padding: 7px 5px;
+  font-size: 10.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Tarjetas (Cards) */
+.card {
+  background: var(--s2);
+  border: 1px solid var(--b1);
+  border-radius: var(--r2);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 4px 18px rgba(10, 34, 64, 0.04);
+}
+
+.card:last-child {
+  margin-bottom: 0;
+}
+
+.card-title {
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--t2);
+  margin-bottom: 1.1rem;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--b1);
+}
+
+/* Inputs y Selectores */
+textarea,
+input[type=number],
+input[type=text],
+select {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #D2D6DC;
+  border-radius: var(--r);
+  color: var(--t1);
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 12px;
+  padding: 9px 12px;
+  transition: all 0.15s;
+}
+
+textarea:focus,
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--ac);
+  box-shadow: 0 0 0 3px rgba(0, 121, 193, 0.15);
+}
+
+textarea::placeholder,
+input::placeholder {
+  color: var(--t4);
+}
+
+textarea {
+  resize: vertical;
+  line-height: 1.7;
+}
+
+.field {
+  margin-bottom: 12px;
+}
+
+.field:last-child {
+  margin-bottom: 0;
+}
+
+.field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--t2);
+  margin-bottom: 6px;
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--t3);
+  font-family: 'Consolas', 'Courier New', monospace;
+  margin-top: 6px;
+}
+
+.meta .hi {
+  color: var(--ac);
+  font-weight: 600;
+}
+
+/* Pastillas (Pills) de Selección */
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.pill {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid #D2D6DC;
+  background: #FFFFFF;
+  color: var(--t2);
+  font-size: 11px;
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.pill:hover {
+  border-color: var(--ac);
+  color: var(--ac);
+  background: #F0F7FC;
+}
+
+.pill.active {
+  border-color: var(--ac);
+  background: var(--ac);
+  color: #FFFFFF;
+}
+
+/* Lista de Modelos */
+.model-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mitem {
+  padding: 10px 12px;
+  border-radius: var(--r);
+  border: 1px solid var(--b1);
+  background: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.mitem:hover {
+  border-color: var(--ac);
+  background: #F8FAFC;
+}
+
+.mitem.sel {
+  border-color: var(--ac);
+  background: #F0F7FC;
+  box-shadow: 0 0 0 1px var(--ac);
+}
+
+.mitem-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mitem-name {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.mitem-price {
+  font-size: 10px;
+  color: var(--t3);
+  font-family: 'Consolas', 'Courier New', monospace;
+  margin-top: 4px;
+}
+
+/* Badges de Tier */
+.tbadge {
+  font-size: 9px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.tb-f {
+  background: #EEF2FF;
+  color: #4F46E5;
+  border: 1px solid #C7D2FE;
+}
+
+.tb-b {
+  background: #ECFDF5;
+  color: #059669;
+  border: 1px solid #A7F3D0;
+}
+
+.tb-s {
+  background: #FEF3C7;
+  color: #D97706;
+  border: 1px solid #FDE68A;
+}
+
+.tb-p {
+  background: #FFF1F2;
+  color: #E11D48;
+  border: 1px solid #FECDD3;
+}
+
+/* Métricas en Tarjetas (Metrics Grid) */
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 1.5rem;
+}
+
+.met {
+  background: #FFFFFF;
+  border: 1px solid var(--b1);
+  border-radius: var(--r2);
+  padding: 1.1rem 1.25rem;
+  box-shadow: 0 4px 18px rgba(10, 34, 64, 0.04);
+}
+
+.met.hl {
+  border-color: rgba(0, 121, 193, 0.3);
+  background: var(--ac3);
+}
+
+.met.gr {
+  border-color: rgba(0, 138, 75, 0.25);
+  background: var(--gr2);
+}
+
+.met-lbl {
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--t3);
+  margin-bottom: 6px;
+}
+
+.met-val {
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--t1);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.met.hl .met-val {
+  color: var(--ac);
+}
+
+.met.gr .met-val {
+  color: var(--gr);
+}
+
+.met-sub {
+  font-size: 10px;
+  color: var(--t3);
+  margin-top: 4px;
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+/* Zonas de Carga (Drop Zones) */
+.drop-zone {
+  border: 2px dashed var(--b2);
+  border-radius: var(--r2);
+  padding: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #F8FAFC;
+}
+
+.drop-zone:hover,
+.drop-zone.drag {
+  border-color: var(--ac);
+  background: var(--ac3);
+}
+
+.drop-zone.csv:hover,
+.drop-zone.csv.drag {
+  border-color: var(--gr);
+  background: var(--gr2);
+}
+
+.drop-icon {
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+
+.drop-text {
+  font-size: 12px;
+  color: var(--t2);
+  font-weight: 500;
+}
+
+.drop-hint {
+  font-size: 10px;
+  color: var(--t3);
+  margin-top: 4px;
+}
+
+/* Skills */
+.skill-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.skill-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #F8FAFC;
+  border: 1px solid var(--b1);
+  border-radius: var(--r);
+}
+
+.skill-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--t1);
+}
+
+.skill-meta {
+  font-size: 10px;
+  color: var(--t3);
+  font-family: 'Consolas', 'Courier New', monospace;
+  margin-top: 2px;
+}
+
+.skill-rm {
+  background: none;
+  border: none;
+  color: var(--t3);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.1s;
+}
+
+.skill-rm:hover {
+  color: var(--rd);
+  background: var(--rd2);
+}
+
+.skill-tok {
+  font-size: 10px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  color: var(--pu);
+  background: var(--pu2);
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+/* Tablas */
+.ptable-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  background: #FFFFFF;
+  border-radius: var(--r2);
+  overflow: hidden;
+}
+
+thead th {
+  text-align: left;
+  padding: 12px 14px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--t3);
+  border-bottom: 2px solid var(--b1);
+  background: #F8FAFC;
+  white-space: nowrap;
+}
+
+tbody tr {
+  border-bottom: 1px solid var(--b1);
+  transition: background 0.1s;
+}
+
+tbody tr:last-child {
+  border-bottom: none;
+}
+
+tbody tr:hover {
+  background: #F8FAFC;
+}
+
+tbody td {
+  padding: 12px 14px;
+  color: var(--t1);
+  vertical-align: middle;
+}
+
+.mono {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 11px;
+}
+
+.cost-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cost-bar {
+  flex: 1;
+  height: 4px;
+  background: var(--s4);
+  border-radius: 999px;
+  min-width: 40px;
+}
+
+.cost-bar-f {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--ac);
+  opacity: 0.9;
+}
+
+.tag-gr {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #ECFDF5;
+  color: #059669;
+  border: 1px solid #A7F3D0;
+  font-weight: 500;
+}
+
+.tag-am {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #FEF3C7;
+  color: #D97706;
+  border: 1px solid #FDE68A;
+  font-weight: 500;
+}
+
+.tag-rd {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #FFF1F2;
+  color: #E11D48;
+  border: 1px solid #FECDD3;
+  font-weight: 500;
+}
+
+/* Barra de Resumen */
+.summary-bar {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: #FFFFFF;
+  border: 1px solid var(--b1);
+  border-radius: var(--r2);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  box-shadow: 0 4px 18px rgba(10, 34, 64, 0.04);
+}
+
+.sb-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sb-lbl {
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--t3);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.sb-val {
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--t1);
+  font-variant-numeric: tabular-nums;
+}
+
+.sb-div {
+  width: 1px;
+  height: 36px;
+  background: var(--b1);
+}
+
+/* Secciones */
+.sec-hdr {
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--t2);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.sec-hdr::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--b1);
+}
+
+/* Grid de Desglose (Breakdown Grid) */
+.bd-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.bd-card {
+  background: #FFFFFF;
+  border: 1px solid var(--b1);
+  border-radius: var(--r2);
+  padding: 1.25rem;
+  box-shadow: 0 4px 18px rgba(10, 34, 64, 0.04);
+}
+
+.bd-title {
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--t3);
+  margin-bottom: 12px;
+}
+
+.bd-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-bottom: 8px;
+  color: var(--t2);
+}
+
+.bd-row:last-child {
+  margin-bottom: 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--b1);
+  font-weight: 700;
+  color: var(--t1);
+}
+
+.bd-val {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 11px;
+  color: var(--t1);
+}
+
+/* Estados Vacíos */
+.empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--t3);
+}
+
+.empty-icon {
+  font-size: 36px;
+  margin-bottom: 12px;
+  opacity: 0.7;
+}
+
+.empty-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--t2);
+}
+
+.empty-hint {
+  font-size: 11px;
+  margin-top: 6px;
+  color: var(--t3);
+}
+
+/* Plantillas y Botones */
+.tmpl {
+  background: #F8FAFC;
+  border: 1px solid var(--b1);
+  border-radius: var(--r);
+  padding: 12px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 10px;
+  color: var(--t2);
+  line-height: 1.8;
+}
+
+.tmpl .hi {
+  color: var(--ac);
+  font-weight: 600;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: var(--r);
+  border: 1px solid var(--b2);
+  background: #FFFFFF;
+  color: var(--t2);
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn:hover {
+  border-color: var(--ac);
+  color: var(--ac);
+  background: #F8FAFC;
+}
+
+/* ── Comparativa de Modelos — componentes de capacidad ─────────────────── */
+
+/* Barra de ordenación / leyenda */
+.compare-sort-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 1rem;
+  padding: 10px 14px;
+  background: #FFFFFF;
+  border: 1px solid var(--b1);
+  border-radius: var(--r2);
+}
+
+.score-legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Puntos de velocidad */
+.speed-dots {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.speed-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* Barra de razonamiento */
+.reasoning-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 80px;
+}
+
+.reasoning-bar-track {
+  flex: 1;
+  height: 6px;
+  background: var(--s4);
+  border-radius: 999px;
+  overflow: hidden;
+  min-width: 40px;
+}
+
+.reasoning-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.3s;
+}
+
+.reasoning-label {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 10px;
+  color: var(--t3);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Badge de score */
+.score-badge {
+  display: inline-block;
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  min-width: 38px;
+  text-align: center;
+}
+
+/* Badge "mejor score" — azul institucional */
+.tag-ac {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--ac3);
+  color: var(--ac);
+  border: 1px solid rgba(0,121,193,0.25);
+  font-weight: 500;
+}
+
+/* ── Batch CSV — Modo Simulación de Escenario ───────────────────────────── */
+
+.batch-override-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 5px;
+  margin-bottom: 4px;
+}
+
+.batch-override-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--t2);
+  cursor: pointer;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.batch-override-label input[type="checkbox"] {
+  width: 13px;
+  height: 13px;
+  accent-color: var(--am);
+  cursor: pointer;
+}
+
+.batch-override-hint {
+  font-size: 10px;
+  color: var(--t3);
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-style: italic;
+}
+
+/* Badge "Simulación activa" en la summary bar */
+.batch-scenario-badge {
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #E65100;
+  background: #FFF3E0;
+  border: 1px solid rgba(230,81,0,0.3);
+  border-radius: 999px;
+  padding: 3px 10px;
+  white-space: nowrap;
+}
+
+/* Barra de detalle del escenario activo */
+.batch-scenario-bar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 7px 1.5rem;
+  background: #FFF8F0;
+  border-bottom: 2px solid #FF9900;
+  font-size: 11px;
+  color: var(--t2);
+  font-family: 'Segoe UI', Arial, sans-serif;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* ── Recomendador de Modelo para Iniciativas IA ─────────────────────────── */
+
+.rec-card {
+  background: #FFFFFF;
+  border: 2px solid var(--ac);
+  border-radius: var(--r2);
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 4px 18px rgba(0,121,193,0.08);
+  margin-bottom: 0;
+}
+
+.rec-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+  gap: 12px;
+}
+
+.rec-badge-recommended {
+  display: inline-block;
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  background: var(--gr2);
+  color: var(--gr);
+  border: 1px solid rgba(0,138,75,0.25);
+  border-radius: 999px;
+  padding: 2px 8px;
+  margin-bottom: 6px;
+}
+
+.rec-model-name {
+  display: block;
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--t1);
+  margin-bottom: 2px;
+}
+
+.rec-score-box {
+  text-align: center;
+  background: var(--ac3);
+  border: 1px solid rgba(0,121,193,0.2);
+  border-radius: var(--r2);
+  padding: 10px 18px;
+  flex-shrink: 0;
+}
+
+.rec-section-label {
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--t3);
+  margin-bottom: 5px;
+}
+
+.rec-justification {
+  font-size: 12px;
+  color: var(--t1);
+  line-height: 1.6;
+  padding: 8px 12px;
+  background: var(--s3);
+  border-radius: var(--r);
+  border-left: 3px solid var(--ac);
+}
+
+.rec-cost-block {
+  background: var(--gr2);
+  border: 1px solid rgba(0,138,75,0.2);
+  border-radius: var(--r);
+  padding: 10px 14px;
+}
+
+.rec-cost-annual {
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gr);
+  font-variant-numeric: tabular-nums;
+}
+
+.rec-risk-box {
+  background: var(--am2);
+  border: 1px solid rgba(217,119,6,0.2);
+  border-radius: var(--r);
+  padding: 10px 14px;
+}
+
+/* Tabla compartida para alternativas y riesgos */
+.rec-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  background: #FFFFFF;
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-bottom: 0;
+}
+
+.rec-table th {
+  background: #003893;
+  color: #FFFFFF;
+  text-align: left;
+  padding: 7px 11px;
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.rec-table td {
+  padding: 8px 11px;
+  border-bottom: 1px solid var(--b1);
+  color: var(--t1);
+  vertical-align: top;
+}
+
+.rec-table tr:last-child td {
+  border-bottom: none;
+}
+
+.rec-table tr:nth-child(even) td {
+  background: var(--s3);
+}
+
+/* Barra de transparencia de pesos */
+.rec-weights-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  padding: 8px 12px;
+  background: var(--s3);
+  border-radius: var(--r);
+  font-size: 11px;
+  color: var(--t2);
+  font-family: 'Segoe UI', Arial, sans-serif;
+  border: 1px solid var(--b1);
+}
+
+/* ── Badges canal Direct / Bedrock ─────────────────────────────────────── */
+.badge-channel {
+  display: inline-block;
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.badge-direct {
+  background: var(--ac3);
+  color: var(--ac);
+  border: 1px solid rgba(0,121,193,0.25);
+}
+
+.badge-bedrock {
+  background: #FFF3E0;
+  color: #E65100;
+  border: 1px solid rgba(230,81,0,0.25);
+}
+
+/* Botón Reporte Ejecutivo */
+.btn-report {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: var(--r);
+  border: 1px solid #003893;
+  background: #003893;
+  color: #FFFFFF;
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.02em;
+}
+
+.btn-report:hover {
+  background: #002570;
+  border-color: #002570;
+}
+
+/* Modal de Reporte Ejecutivo */
+.report-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 34, 64, 0.6);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  backdrop-filter: blur(3px);
+}
+
+.report-overlay.open {
+  display: flex;
+}
+
+.report-modal {
+  background: #FFFFFF;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 780px;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 60px rgba(10, 34, 64, 0.25);
+  overflow: hidden;
+}
+
+.report-modal-header {
+  background: #003893;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.report-modal-title {
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: -0.01em;
+}
+
+.report-modal-subtitle {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-size: 10px;
+  color: rgba(255,255,255,0.7);
+  margin-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.report-modal-close {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #FFFFFF;
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.report-modal-close:hover {
+  background: rgba(255,255,255,0.28);
+}
+
+.report-modal-body {
+  overflow-y: auto;
+  flex: 1;
+  padding: 1.75rem 2rem;
+}
+
+.report-modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--b1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  background: #F8FAFC;
+}
+
+.report-footer-brand {
+  font-size: 10px;
+  color: var(--t3);
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.btn-copy-md {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--r);
+  border: 1px solid #003893;
+  background: #FFFFFF;
+  color: #003893;
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-copy-md:hover {
+  background: #003893;
+  color: #FFFFFF;
+}
+
+.btn-export-pdf {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--r);
+  border: none;
+  background: #003893;
+  color: #FFFFFF;
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-export-pdf:hover {
+  background: #002570;
+}
+
+/* Contenido del reporte */
+.rpt-section-title {
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #003893;
+  border-bottom: 2px solid #003893;
+  padding-bottom: 6px;
+  margin: 1.5rem 0 1rem;
+}
+
+.rpt-section-title:first-child {
+  margin-top: 0;
+}
+
+.rpt-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-bottom: 1rem;
+}
+
+.rpt-table th {
+  background: #003893;
+  color: #FFFFFF;
+  text-align: left;
+  padding: 8px 12px;
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.rpt-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--b1);
+  color: var(--t1);
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.rpt-table tr:nth-child(even) td {
+  background: #F8FAFC;
+}
+
+.rpt-table td.rpt-num {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 11px;
+}
+
+.rpt-table td.rpt-green {
+  color: #00A13A;
+  font-weight: 600;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 11px;
+}
+
+.rpt-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rpt-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--t1);
+  line-height: 1.5;
+}
+
+.rpt-list li::before {
+  content: '▸';
+  color: #003893;
+  font-size: 10px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.rpt-optim-box {
+  background: #EEF3FF;
+  border: 1px solid rgba(0,56,147,0.2);
+  border-radius: var(--r2);
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+}
+
+.rpt-optim-label {
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: #003893;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+
+.rpt-optim-text {
+  font-size: 12px;
+  color: var(--t1);
+  line-height: 1.6;
+}
+
+.rpt-roi-box {
+  background: #F0FDF4;
+  border: 1px solid rgba(0,161,58,0.25);
+  border-radius: var(--r2);
+  padding: 1rem 1.25rem;
+  margin-top: 1rem;
+}
+
+.rpt-roi-label {
+  font-family: 'Segoe UI Semibold', 'Segoe UI', Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: #00A13A;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+
+.rpt-roi-text {
+  font-size: 12px;
+  color: var(--t1);
+  line-height: 1.6;
+}
+
+/* Pie de Página (Footer) */
+.corp-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  margin-top: 3rem;
+  background: #FFFFFF;
+  border-top: 1px solid var(--b1);
+  font-size: 11px;
+  color: var(--t3);
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-divider {
+  color: var(--b1);
+}
+
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.grupo-aval-text {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+/* ============================================================
+   Estilos de impresión / exportación PDF
+   ============================================================ */
+#report-print-area {
+  display: none;
+}
+
+@media print {
+  /* Ocultar toda la app */
+  body > *:not(#report-print-area) {
+    display: none !important;
+  }
+
+  #report-print-area {
+    display: block !important;
+    font-family: 'Inter', Arial, sans-serif;
+    color: #1C2A38;
+    font-size: 11pt;
+    line-height: 1.5;
+  }
+
+  /* Cabecera institucional */
+  .pdf-header {
+    background: #003893 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    color: #fff !important;
+    padding: 18pt 24pt;
+    margin-bottom: 18pt;
+  }
+
+  .pdf-header-title {
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-size: 16pt;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 3pt;
+  }
+
+  .pdf-header-sub {
+    font-size: 8pt;
+    color: rgba(255,255,255,0.8);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .pdf-header-meta {
+    font-size: 8pt;
+    color: rgba(255,255,255,0.65);
+    margin-top: 6pt;
+  }
+
+  .pdf-body {
+    padding: 0 24pt;
+  }
+
+  /* Títulos de sección */
+  .pdf-section-title {
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-size: 10pt;
+    font-weight: 700;
+    color: #003893 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    border-bottom: 1.5pt solid #003893;
+    padding-bottom: 4pt;
+    margin: 16pt 0 8pt;
+  }
+
+  .pdf-section-title:first-child {
+    margin-top: 0;
+  }
+
+  /* Tablas */
+  .pdf-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9.5pt;
+    margin-bottom: 12pt;
+    page-break-inside: auto;
+  }
+
+  .pdf-table th {
+    background: #003893 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    color: #fff !important;
+    text-align: left;
+    padding: 6pt 9pt;
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-size: 8pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }
+
+  .pdf-table td {
+    padding: 6pt 9pt;
+    border-bottom: 0.5pt solid #E2E8F0;
+    color: #1C2A38;
+  }
+
+  .pdf-table tr:nth-child(even) td {
+    background: #F8FAFC !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .pdf-table td.pdf-num {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 9pt;
+  }
+
+  .pdf-table td.pdf-green {
+    color: #00A13A !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 9pt;
+    font-weight: 700;
+  }
+
+  /* Listas */
+  .pdf-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10pt;
+  }
+
+  .pdf-list li {
+    padding: 3pt 0 3pt 14pt;
+    position: relative;
+    font-size: 9.5pt;
+    border-bottom: 0.5pt solid #F1F5F9;
+  }
+
+  .pdf-list li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: #003893;
+    font-size: 8pt;
+  }
+
+  /* Cajas de optimización y ROI */
+  .pdf-optim-box {
+    background: #EEF3FF !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    border: 0.75pt solid #AABCE8;
+    border-radius: 6pt;
+    padding: 10pt 13pt;
+    margin: 10pt 0;
+    page-break-inside: avoid;
+  }
+
+  .pdf-optim-label {
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-size: 8pt;
+    font-weight: 700;
+    color: #003893 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 4pt;
+  }
+
+  .pdf-optim-text {
+    font-size: 9.5pt;
+    color: #1C2A38;
+    line-height: 1.55;
+  }
+
+  .pdf-roi-box {
+    background: #F0FDF4 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    border: 0.75pt solid #86EFAC;
+    border-radius: 6pt;
+    padding: 10pt 13pt;
+    margin: 10pt 0;
+    page-break-inside: avoid;
+  }
+
+  .pdf-roi-label {
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-size: 8pt;
+    font-weight: 700;
+    color: #00A13A !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 4pt;
+  }
+
+  .pdf-roi-text {
+    font-size: 9.5pt;
+    color: #1C2A38;
+    line-height: 1.55;
+  }
+
+  /* Footer del documento PDF */
+  .pdf-footer {
+    margin-top: 20pt;
+    padding-top: 8pt;
+    border-top: 0.75pt solid #CBD5E1;
+    display: flex;
+    justify-content: space-between;
+    font-size: 7.5pt;
+    color: #64748B;
+    font-family: 'Montserrat', Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* Configuración de página */
+  @page {
+    size: A4;
+    margin: 0;
+  }
+}
